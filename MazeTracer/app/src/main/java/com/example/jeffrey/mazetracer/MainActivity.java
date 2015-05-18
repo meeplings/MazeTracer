@@ -1,41 +1,65 @@
 package com.example.jeffrey.mazetracer;
 
-import android.graphics.Color;
-import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
+import android.support.v7.app.ActionBarActivity;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.MotionEvent;
 import android.view.View;
-import android.widget.Button;
 import android.widget.GridLayout;
+import android.widget.ImageButton;
 
 
 public class MainActivity extends ActionBarActivity {
 
-    GridLayout layout = (GridLayout) findViewById(R.id.gridLayout);
+    float x;
+    float y;
 
-
-    Button b0 = (Button) findViewById(R.id.button0);
-    Button b1 = (Button) findViewById(R.id.button1);
-    Button b2 = (Button) findViewById(R.id.button2);
-    Button b3 = (Button) findViewById(R.id.button3);
-
-    View.OnTouchListener touchListener = new View.OnTouchListener() {
-        @Override
-        public boolean onTouch(View v, MotionEvent event) {
-            v.setBackgroundColor(Color.GREEN);
-            v.setActivated(false);
-            b0.setClickable(true);
-            return false;
-        }
-    };
+    ImageButton star;
+    GridLayout grid;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        grid = (GridLayout) findViewById(R.id.gridLayout);
+        x = 0;
+        y = 0;
+        star = (ImageButton) findViewById(R.id.star);
+        star.setOnTouchListener(
+                new ImageButton.OnTouchListener(){
+                    public boolean onTouch(View v, MotionEvent e) {
+                        star.setX(x);
+                        star.setY(y);
+
+                        switch (e.getAction()) {
+                            case MotionEvent.ACTION_DOWN:
+                                x = e.getX();
+                                y = e.getY();
+                                break;
+                            case MotionEvent.ACTION_UP:
+                                x = e.getX();
+                                y = e.getY();
+                                break;
+                            case MotionEvent.ACTION_MOVE:
+                                x = e.getX();
+                                y = e.getY();
+                                break;
+                            default:
+                                x = 0;
+                                y = 0;
+                                break;
+
+                        }
+                        return false;
+
+                    }
+                }
+        );
+
+
     }
+
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -59,15 +83,6 @@ public class MainActivity extends ActionBarActivity {
         return super.onOptionsItemSelected(item);
     }
 
-    public void onStartClick(View view){
-        view.setBackgroundColor(Color.GREEN);
-        view.setClickable(false);
-    }
-
-    public void onClick(View view){
-        view.setBackgroundColor(Color.BLUE);
-        b0.setClickable(false);
-    }
 
 
 }
