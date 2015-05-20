@@ -1,4 +1,4 @@
-<GridLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools" android:layout_width="match_parent"
     android:layout_height="match_parent" android:paddingLeft="@dimen/activity_horizontal_margin"
     android:paddingRight="@dimen/activity_horizontal_margin"
@@ -7,4 +7,35 @@
     android:id="@+id/gridLayout">
 
 
-</GridLayout>
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textAppearance="?android:attr/textAppearanceLarge"
+        android:text="@string/StartText"
+        android:id="@+id/textView2"
+        android:layout_row="6"
+        android:layout_column="12" />
+
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="To Game"
+        android:id="@+id/button"
+        android:layout_below="@+id/textView2"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="114dp"
+        android:background="@android:drawable/star_on"
+        android:textColor="#fffeff0d"
+        android:textColorHighlight="#ffcbd7ff"
+        android:onClick="onStartClick" />
+
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="To Instructions"
+        android:id="@+id/button2"
+        android:layout_marginTop="124dp"
+        android:layout_below="@+id/button"
+        android:layout_centerHorizontal="true"
+        android:onClick="onInstructionClick" />
+</RelativeLayout>

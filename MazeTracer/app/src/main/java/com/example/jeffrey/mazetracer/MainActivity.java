@@ -1,30 +1,47 @@
 package com.example.jeffrey.mazetracer;
 
 import android.os.Bundle;
-import android.support.v7.app.ActionBarActivity;
+
+import android.support.v7.app.AppCompatActivity;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.MotionEvent;
 import android.view.View;
 import android.widget.GridLayout;
 import android.widget.ImageButton;
+import android.widget.TextView;
 
 
-public class MainActivity extends ActionBarActivity {
+public class MainActivity extends AppCompatActivity {
 
     float x;
     float y;
 
     ImageButton star;
+    ImageButton redX;
     GridLayout grid;
+    TextView test;
+    ImageButton[][] box;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        grid = (GridLayout) findViewById(R.id.gridLayout);
+        test = (TextView) findViewById(R.id.idTest);
+
         x = 0;
         y = 0;
+        box = new ImageButton[4][4];
+        box[0][0] = (ImageButton) findViewById(R.id.redX00);
+        box[3][3] = (ImageButton) findViewById(R.id.redX33);
+//        for(int i = 0; i < box.length; i++){
+//            for(int j = 0; j < box[i].length; j++){
+//                int id = R.id.redX00;
+//                box[i][j] = (ImageButton) findViewById(id);
+//            }
+//        }
+        test.setText(Integer.toString(box[0][0].getId()) + "\t" + Integer.toString(box[3][3].getId()));
+
         star = (ImageButton) findViewById(R.id.star);
         star.setOnTouchListener(
                 new ImageButton.OnTouchListener(){
@@ -38,12 +55,16 @@ public class MainActivity extends ActionBarActivity {
                                 y = e.getY();
                                 break;
                             case MotionEvent.ACTION_UP:
-                                x = e.getX();
-                                y = e.getY();
+                                x = startX;
+                                y = startY;
                                 break;
                             case MotionEvent.ACTION_MOVE:
                                 x = e.getX();
                                 y = e.getY();
+                                break;
+                            case MotionEvent.ACTION_CANCEL:
+                                x = startX;
+                                y = startY;
                                 break;
                             default:
                                 x = 0;
@@ -56,9 +77,13 @@ public class MainActivity extends ActionBarActivity {
                     }
                 }
         );
+        resetStar();
 
 
     }
+    final float startX = star.getX();
+    final float startY = star.getY();
+
 
 
     @Override
@@ -83,6 +108,11 @@ public class MainActivity extends ActionBarActivity {
         return super.onOptionsItemSelected(item);
     }
 
-
+    public void resetStar(){
+        if((redX.getX() - star.getX() < 0 ) && (redX.getY() - star.getY() <0)){
+            star.setX(startX);
+            star.setY(startY);
+        }
+    }
 
 }
