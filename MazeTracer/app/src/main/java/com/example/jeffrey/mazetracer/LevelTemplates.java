@@ -1,19 +1,14 @@
 package com.example.jeffrey.mazetracer;
 import android.os.Bundle;
-import android.support.v7.app.AppCompatActivity;
+import android.support.v7.app.ActionBarActivity;
 import android.view.MotionEvent;
 import android.view.View;
 import android.widget.ImageButton;
 
-import java.io.BufferedReader;
-import java.io.FileNotFoundException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-
 /**
  * Created by Jeffrey on 5/12/2015.
  */
-public class LevelTemplates extends AppCompatActivity {
+public class LevelTemplates extends ActionBarActivity {
 
     public int score;
     ImageButton star;

@@ -1,16 +1,14 @@
 package com.example.jeffrey.mazetracer;
 
-import android.content.ClipData;
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.v7.app.AppCompatActivity;
+import android.support.v7.app.ActionBarActivity;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.ImageView;
 
 
-public class StartActivity extends AppCompatActivity {
+public class StartActivity extends ActionBarActivity {
 
 //    ImageView imageView = new ImageView(this);
 //
@@ -66,6 +64,9 @@ public class StartActivity extends AppCompatActivity {
 
     }
     public void onStartClick(View v){
+        Intent i = new Intent(StartActivity.this,MainActivity.class);
+        startActivity(i);
+        finish();
 
     }
 }

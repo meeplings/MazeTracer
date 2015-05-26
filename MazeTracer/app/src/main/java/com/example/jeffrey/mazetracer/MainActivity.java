@@ -1,47 +1,49 @@
 package com.example.jeffrey.mazetracer;
 
 import android.os.Bundle;
-
-import android.support.v7.app.AppCompatActivity;
+import android.support.v7.app.ActionBarActivity;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.MotionEvent;
 import android.view.View;
-import android.widget.GridLayout;
 import android.widget.ImageButton;
-import android.widget.TextView;
+import android.widget.TableLayout;
 
 
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends ActionBarActivity {
 
     float x;
     float y;
 
     ImageButton star;
-    ImageButton redX;
-    GridLayout grid;
-    TextView test;
+    TableLayout grid;
     ImageButton[][] box;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        test = (TextView) findViewById(R.id.idTest);
-
+        grid = (TableLayout) findViewById(R.id.tableLayout);
         x = 0;
         y = 0;
         box = new ImageButton[4][4];
-        box[0][0] = (ImageButton) findViewById(R.id.redX00);
-        box[3][3] = (ImageButton) findViewById(R.id.redX33);
-//        for(int i = 0; i < box.length; i++){
-//            for(int j = 0; j < box[i].length; j++){
-//                int id = R.id.redX00;
-//                box[i][j] = (ImageButton) findViewById(id);
-//            }
-//        }
-        test.setText(Integer.toString(box[0][0].getId()) + "\t" + Integer.toString(box[3][3].getId()));
-
+        int id = R.id.redX00;
+        for(int i = 0; i < box.length; i++){
+            for(int j = 0; j < box[i].length; j++){
+                box[i][j] = (ImageButton) findViewById(id);
+                id++;
+            }
+        }
+        box[1][1].setActivated(false);
+        box[1][2].setActivated(false);
+        box[2][1].setActivated(false);
+        box[2][2].setActivated(false);
+        for(int i = 0; i < box.length; i++){
+            for(int j = 0; j < box[i].length; j++){
+                if(!box[i][j].isActivated())
+                    box[i][j].setVisibility(View.INVISIBLE);
+            }
+        }
         star = (ImageButton) findViewById(R.id.star);
         star.setOnTouchListener(
                 new ImageButton.OnTouchListener(){
@@ -55,20 +57,17 @@ public class MainActivity extends AppCompatActivity {
                                 y = e.getY();
                                 break;
                             case MotionEvent.ACTION_UP:
-                                x = startX;
-                                y = startY;
+                                resetStar(star,grid);
                                 break;
                             case MotionEvent.ACTION_MOVE:
                                 x = e.getX();
                                 y = e.getY();
                                 break;
                             case MotionEvent.ACTION_CANCEL:
-                                x = startX;
-                                y = startY;
+                                resetStar(star,grid);
                                 break;
                             default:
-                                x = 0;
-                                y = 0;
+                                resetStar(star,grid);
                                 break;
 
                         }
@@ -77,12 +76,8 @@ public class MainActivity extends AppCompatActivity {
                     }
                 }
         );
-        resetStar();
-
-
+        boxSetup(box[1][2]);
     }
-    final float startX = star.getX();
-    final float startY = star.getY();
 
 
 
@@ -108,11 +103,14 @@ public class MainActivity extends AppCompatActivity {
         return super.onOptionsItemSelected(item);
     }
 
-    public void resetStar(){
-        if((redX.getX() - star.getX() < 0 ) && (redX.getY() - star.getY() <0)){
-            star.setX(startX);
-            star.setY(startY);
-        }
+    public void resetStar(ImageButton s, TableLayout screen){
+            s.setX(screen.getWidth()/2);
+            s.setY(screen.getHeight()/2);
+
+    }
+    public void boxSetup(View v){
+        v.setX(grid.getWidth()/2);
+        v.setY(grid.getHeight()/2);
     }
 
 }
