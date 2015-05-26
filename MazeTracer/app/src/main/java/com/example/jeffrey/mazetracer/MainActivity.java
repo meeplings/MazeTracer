@@ -1,5 +1,6 @@
 package com.example.jeffrey.mazetracer;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.ActionBarActivity;
 import android.view.Menu;
@@ -7,43 +8,60 @@ import android.view.MenuItem;
 import android.view.MotionEvent;
 import android.view.View;
 import android.widget.ImageButton;
-import android.widget.TableLayout;
+import android.widget.RelativeLayout;
+
+import java.util.ArrayList;
+import java.util.List;
 
 
 public class MainActivity extends ActionBarActivity {
 
     float x;
     float y;
+    List<ImageButton> ActivatedButtons;
 
     ImageButton star;
-    TableLayout grid;
+    RelativeLayout screen;
     ImageButton[][] box;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        grid = (TableLayout) findViewById(R.id.tableLayout);
+        ActivatedButtons = new ArrayList<ImageButton>();
+        screen = (RelativeLayout) findViewById(R.id.relativeLayout);
         x = 0;
         y = 0;
-        box = new ImageButton[4][4];
-        int id = R.id.redX00;
+        box = new ImageButton[100][100];
         for(int i = 0; i < box.length; i++){
-            for(int j = 0; j < box[i].length; j++){
-                box[i][j] = (ImageButton) findViewById(id);
-                id++;
+            for(int j =0; j < box[i].length; j++){
+                box[i][j] = new ImageButton(this);
+                box[i][j].setOnTouchListener(
+                        new ImageButton.OnTouchListener(){
+                            public boolean onTouch(View v, MotionEvent e){
+                                if(v.)
+                                return true;
+                            }
+                        }
+                );
             }
         }
-        box[1][1].setActivated(false);
-        box[1][2].setActivated(false);
-        box[2][1].setActivated(false);
-        box[2][2].setActivated(false);
-        for(int i = 0; i < box.length; i++){
-            for(int j = 0; j < box[i].length; j++){
-                if(!box[i][j].isActivated())
-                    box[i][j].setVisibility(View.INVISIBLE);
+        for(int i = 1; i < box.length; i++){
+            for(int j = 1; j < box[i].length; j++){
+                box[i][j].setActivated(false);
             }
         }
+
+        int yOffset = 0;
+        for(int i = 0; i < box.length; i++){
+            int xOffset = 0;
+            for(int j = 0; j < box[i].length; j++){
+                boxSetup(box[i][j], xOffset, yOffset);
+                xOffset+= (int) (1/100* getResources().getDisplayMetrics().density) ;
+            }
+            yOffset+= (int) (1/100* getResources().getDisplayMetrics().density) ;
+        }
+        invisButtons();
         star = (ImageButton) findViewById(R.id.star);
         star.setOnTouchListener(
                 new ImageButton.OnTouchListener(){
@@ -57,17 +75,27 @@ public class MainActivity extends ActionBarActivity {
                                 y = e.getY();
                                 break;
                             case MotionEvent.ACTION_UP:
-                                resetStar(star,grid);
+                                resetStar(star,screen);
                                 break;
                             case MotionEvent.ACTION_MOVE:
                                 x = e.getX();
                                 y = e.getY();
+                                for(int i = 0; i < box.length; i++){
+                                    for(int j = 1; j < box[i].length; j++){
+                                        if((star.getX()  - box[i][j].getX() > 0) && (star.getY() - box[i][j].getY() > 0)){
+                                            Intent intent = new Intent(MainActivity.this, StartActivity.class);
+                                            startActivity(intent);
+                                            finish();
+                                        }
+
+                                    }
+                                }
                                 break;
                             case MotionEvent.ACTION_CANCEL:
-                                resetStar(star,grid);
+                                resetStar(star,screen);
                                 break;
                             default:
-                                resetStar(star,grid);
+                                resetStar(star,screen);
                                 break;
 
                         }
@@ -76,7 +104,6 @@ public class MainActivity extends ActionBarActivity {
                     }
                 }
         );
-        boxSetup(box[1][2]);
     }
 
 
@@ -103,14 +130,28 @@ public class MainActivity extends ActionBarActivity {
         return super.onOptionsItemSelected(item);
     }
 
-    public void resetStar(ImageButton s, TableLayout screen){
+    public void resetStar(ImageButton s, RelativeLayout screen){
             s.setX(screen.getWidth()/2);
             s.setY(screen.getHeight()/2);
 
     }
-    public void boxSetup(View v){
-        v.setX(grid.getWidth()/2);
-        v.setY(grid.getHeight()/2);
+    public void boxSetup(ImageButton x, int xOff, int yOff){
+        RelativeLayout.LayoutParams p = new RelativeLayout.LayoutParams((int) (screen.getWidth()/100*getResources().getDisplayMetrics().density)
+                , (int) (screen.getHeight()/100* getResources().getDisplayMetrics().density));
+        p.leftMargin = xOff;
+        p.topMargin = yOff;
+        x.setBackgroundResource(R.drawable.red_x);
+        screen.addView(x, p);
+    }
+    public void invisButtons(){
+        for(int i = 0; i < box.length; i++){
+            for(int j = 0; j < box[i].length; j++){
+                if(!box[i][j].isActivated())
+                    box[i][j].setVisibility(View.INVISIBLE);
+                else
+                    ActivatedButtons.add(box[i][j]);
+            }
+        }
     }
 
 }
