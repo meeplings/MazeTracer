@@ -1,6 +1,7 @@
 package com.example.jeffrey.mazetracer;
 
 import android.content.Intent;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.support.v7.app.ActionBarActivity;
 import android.view.Menu;
@@ -32,14 +33,17 @@ public class MainActivity extends ActionBarActivity {
         screen = (RelativeLayout) findViewById(R.id.relativeLayout);
         x = 0;
         y = 0;
-        box = new ImageButton[100][100];
+        box = new ImageButton[20][20];
         for(int i = 0; i < box.length; i++){
             for(int j =0; j < box[i].length; j++){
                 box[i][j] = new ImageButton(this);
                 box[i][j].setOnTouchListener(
                         new ImageButton.OnTouchListener(){
-                            public boolean onTouch(View v, MotionEvent e){
-                                if(v.)
+                            public boolean onTouch(View v, MotionEvent e) {
+                                if (e.getAction() == MotionEvent.ACTION_MOVE){
+                                    x = screen.getWidth() / 2;
+                                    y = screen.getHeight() / 2;
+                            }
                                 return true;
                             }
                         }
@@ -140,7 +144,8 @@ public class MainActivity extends ActionBarActivity {
                 , (int) (screen.getHeight()/100* getResources().getDisplayMetrics().density));
         p.leftMargin = xOff;
         p.topMargin = yOff;
-        x.setBackgroundResource(R.drawable.red_x);
+        if(x.isActivated())
+             x.setBackgroundColor(Color.BLUE);
         screen.addView(x, p);
     }
     public void invisButtons(){
