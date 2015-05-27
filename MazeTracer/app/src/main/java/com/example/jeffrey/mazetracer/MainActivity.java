@@ -11,8 +11,15 @@ import android.view.View;
 import android.widget.ImageButton;
 import android.widget.RelativeLayout;
 
+import java.io.BufferedReader;
+import java.io.ByteArrayOutputStream;
+import java.io.File;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Scanner;
 
 
 public class MainActivity extends ActionBarActivity {
@@ -156,6 +163,14 @@ public class MainActivity extends ActionBarActivity {
                 else
                     ActivatedButtons.add(box[i][j]);
             }
+        }
+    }
+    public void readText(String s) throws IOException {
+        Scanner scan;
+        try{
+            scan = new Scanner(getAssets().open("box.txt"));
+        }catch(IOException e) {
+            e.printStackTrace();
         }
     }
 
