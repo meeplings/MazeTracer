@@ -11,15 +11,8 @@ import android.view.View;
 import android.widget.ImageButton;
 import android.widget.RelativeLayout;
 
-import java.io.BufferedReader;
-import java.io.ByteArrayOutputStream;
-import java.io.File;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Scanner;
 
 
 public class MainActivity extends ActionBarActivity {
@@ -55,6 +48,8 @@ public class MainActivity extends ActionBarActivity {
                             }
                         }
                 );
+                box[i][j].setVisibility(View.VISIBLE);
+                box[i][j].setActivated(true);
             }
         }
         for(int i = 1; i < box.length; i++){
@@ -165,13 +160,30 @@ public class MainActivity extends ActionBarActivity {
             }
         }
     }
-    public void readText(String s) throws IOException {
-        Scanner scan;
-        try{
-            scan = new Scanner(getAssets().open("box.txt"));
-        }catch(IOException e) {
-            e.printStackTrace();
-        }
-    }
+//    public void scan (String s) throws IOException {
+//        Scanner scan = null;
+//        try{
+//            scan = new Scanner(getAssets().open("box.txt"));
+//        }catch(IOException e) {
+//            e.printStackTrace();
+//        }
+//        if(scan != null)
+//            readText(scan);
+//    }
+//
+//    public static String[][] readText(Scanner scan){
+//        String[][] result = new String[9][7];
+//        int row = 0;
+//        while(scan.hasNext()){
+//            int col = 0;
+//            String character = scan.next();
+//            if(character == "s")
+//                result[row][col] = "s";
+//            else if(character == "e")
+//                result[row][col] = "e";
+//            else if(character == )
+//
+//        }
+//    }
 
 }
