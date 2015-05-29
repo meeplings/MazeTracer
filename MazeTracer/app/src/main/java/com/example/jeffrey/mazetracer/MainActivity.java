@@ -35,22 +35,24 @@ public class MainActivity extends ActionBarActivity {
         screen = (RelativeLayout) findViewById(R.id.relativeLayout);
         x = 0;
         y = 0;
-        box = new ImageButton[20][20];
+        box = new ImageButton[5][5];
         for(int i = 0; i < box.length; i++){
             for(int j =0; j < box[i].length; j++){
                 box[i][j] = new ImageButton(this);
                 box[i][j].setOnTouchListener(
                         new ImageButton.OnTouchListener(){
                             public boolean onTouch(View v, MotionEvent e) {
-                                if (e.getAction() == MotionEvent.ACTION_MOVE){
-                                    x = screen.getWidth() / 2;
-                                    y = screen.getHeight() / 2;
+                                if (star.isPressed() && v.){
+                                    Intent intent = new Intent(MainActivity.this, StartActivity.class);
+                                    startActivity(intent);
+                                    finish();
                             }
                                 return true;
                             }
                         }
                 );
                 box[i][j].setVisibility(View.VISIBLE);
+                box[i][j].setImageResource(R.drawable.red_x);
                 box[i][j].setActivated(true);
             }
         }
@@ -88,16 +90,6 @@ public class MainActivity extends ActionBarActivity {
                             case MotionEvent.ACTION_MOVE:
                                 x = e.getX();
                                 y = e.getY();
-                                for(int i = 0; i < box.length; i++){
-                                    for(int j = 1; j < box[i].length; j++){
-                                        if((star.getX()  - box[i][j].getX() > 0) && (star.getY() - box[i][j].getY() > 0)){
-                                            Intent intent = new Intent(MainActivity.this, StartActivity.class);
-                                            startActivity(intent);
-                                            finish();
-                                        }
-
-                                    }
-                                }
                                 break;
                             case MotionEvent.ACTION_CANCEL:
                                 resetStar(star,screen);
@@ -170,7 +162,7 @@ public class MainActivity extends ActionBarActivity {
             e.printStackTrace();
         }
         if(scan != null)
-            readText(scan);
+            readText(box,scan);
     }
 
     public ImageButton[][] readText(ImageButton[][] b, Scanner scan){
@@ -188,10 +180,18 @@ public class MainActivity extends ActionBarActivity {
                 b[row][col].setBackgroundResource(R.drawable.e_image);
                 b[row][col].setBackgroundColor(Color.RED);
             }
-            else if(character == "*")
-                b[row][col] = ""
+            else if(character == "*"){
+                b[row][col].setBackgroundColor(Color.BLUE);
+            }
+            col++;
+             if(character == "|"){
+                 col = 0;
+                 row++;
+            }
+
 
         }
+        return b;
     }
 
 }
