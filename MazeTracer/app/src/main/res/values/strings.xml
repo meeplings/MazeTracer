@@ -11,4 +11,5 @@
     <string name="title_activity_level_templates">LevelTemplates</string>
     <string name="Score">Score:  </string>
     <string name="MazeDrawer">To Next Maze!</string>
+    <string name="title_activity_waiting">WaitingActivity</string>
 </resources>

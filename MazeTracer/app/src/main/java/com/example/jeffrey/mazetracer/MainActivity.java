@@ -3,7 +3,7 @@ package com.example.jeffrey.mazetracer;
 import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
-import android.support.v7.app.ActionBarActivity;
+import android.support.v7.app.AppCompatActivity;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.MotionEvent;
@@ -12,15 +12,20 @@ import android.widget.ImageButton;
 import android.widget.RelativeLayout;
 
 import java.io.IOException;
+import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
 
 
-public class MainActivity extends ActionBarActivity {
+public class MainActivity extends AppCompatActivity{
 
     float x;
+    private static double score;
+    private long startTimer;
+    static String scoreSender;
     float y;
+    Scanner input;
     List<ImageButton> ActivatedButtons;
 
     ImageButton star;
@@ -31,20 +36,34 @@ public class MainActivity extends ActionBarActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        startTimer = System.currentTimeMillis();
+        scoreSender = Double.toString(score);
+        try {
+            input = new Scanner(randFile(fileSetup()));
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
         ActivatedButtons = new ArrayList<ImageButton>();
         screen = (RelativeLayout) findViewById(R.id.relativeLayout);
         x = 0;
         y = 0;
-        box = new ImageButton[20][20];
+        box = boxSetup(input);
+        int yOffset = 0;
         for(int i = 0; i < box.length; i++){
+            int xOffset = 0;
             for(int j =0; j < box[i].length; j++){
                 box[i][j] = new ImageButton(this);
+                buttonSetup(box[i][j], xOffset, yOffset);
+                xOffset+=box[i][j].getWidth();
                 box[i][j].setOnTouchListener(
                         new ImageButton.OnTouchListener(){
                             public boolean onTouch(View v, MotionEvent e) {
-                                if (e.getAction() == MotionEvent.ACTION_MOVE){
-                                    x = screen.getWidth() / 2;
-                                    y = screen.getHeight() / 2;
+                                if (star.isPressed() &&
+                                        ((v.getX()+v.getWidth() > star.getX() + star.getWidth())&& (v.getY()+v.getHeight()> star.getY() + star.getHeight()))){
+                                    Intent intent = new Intent(MainActivity.this, StartActivity.class);
+                                    intent.putExtra("score", scoreSender);
+                                    startActivity(intent);
+                                    finish();
                             }
                                 return true;
                             }
@@ -53,21 +72,12 @@ public class MainActivity extends ActionBarActivity {
                 box[i][j].setVisibility(View.VISIBLE);
                 box[i][j].setActivated(true);
             }
+            yOffset+=box[i][0].getHeight();
         }
         for(int i = 1; i < box.length; i++){
             for(int j = 1; j < box[i].length; j++){
                 box[i][j].setActivated(false);
             }
-        }
-
-        int yOffset = 0;
-        for(int i = 0; i < box.length; i++){
-            int xOffset = 0;
-            for(int j = 0; j < box[i].length; j++){
-                boxSetup(box[i][j], xOffset, yOffset);
-                xOffset+= (int) (1/100* getResources().getDisplayMetrics().density) ;
-            }
-            yOffset+= (int) (1/100* getResources().getDisplayMetrics().density) ;
         }
         invisButtons();
         star = (ImageButton) findViewById(R.id.star);
@@ -88,16 +98,6 @@ public class MainActivity extends ActionBarActivity {
                             case MotionEvent.ACTION_MOVE:
                                 x = e.getX();
                                 y = e.getY();
-                                for(int i = 0; i < box.length; i++){
-                                    for(int j = 1; j < box[i].length; j++){
-                                        if((star.getX()  - box[i][j].getX() > 0) && (star.getY() - box[i][j].getY() > 0)){
-                                            Intent intent = new Intent(MainActivity.this, StartActivity.class);
-                                            startActivity(intent);
-                                            finish();
-                                        }
-
-                                    }
-                                }
                                 break;
                             case MotionEvent.ACTION_CANCEL:
                                 resetStar(star,screen);
@@ -140,12 +140,12 @@ public class MainActivity extends ActionBarActivity {
 
     public void resetStar(ImageButton s, RelativeLayout screen){
             s.setX(screen.getWidth()/2);
-            s.setY(screen.getHeight()/2);
+            s.setY(screen.getHeight() / 2);
 
     }
-    public void boxSetup(ImageButton x, int xOff, int yOff){
-        RelativeLayout.LayoutParams p = new RelativeLayout.LayoutParams((int) (screen.getWidth()/100*getResources().getDisplayMetrics().density)
-                , (int) (screen.getHeight()/100* getResources().getDisplayMetrics().density));
+    public void buttonSetup(ImageButton x, int xOff, int yOff){
+        RelativeLayout.LayoutParams p = new RelativeLayout.LayoutParams((int) ( screen.getWidth()/getResources().getDisplayMetrics().density), (
+                (int) (screen.getHeight()/ getResources().getDisplayMetrics().density)));
         p.leftMargin = xOff;
         p.topMargin = yOff;
         if(x.isActivated())
@@ -162,15 +162,15 @@ public class MainActivity extends ActionBarActivity {
             }
         }
     }
-    public void scan (String s) throws IOException {
+    public void scan() throws IOException {
         Scanner scan = null;
         try{
-            scan = new Scanner(getAssets().open("box.txt"));
+            scan = new Scanner(getAssets().open("N.txt"));
         }catch(IOException e) {
             e.printStackTrace();
         }
         if(scan != null)
-            readText(scan);
+            readText(box, scan);
     }
 
     public ImageButton[][] readText(ImageButton[][] b, Scanner scan){
@@ -189,9 +189,48 @@ public class MainActivity extends ActionBarActivity {
                 b[row][col].setBackgroundColor(Color.RED);
             }
             else if(character == "*")
-                b[row][col] = ""
+                b[row][col].setBackgroundColor(Color.BLUE);
+            row++;
+            if(character == "|"){
+                scan.nextLine();
+                col++;
+                row = 0;
+            }
+
+
 
         }
+        return b;
+    }
+    public InputStream randFile(InputStream[] f){
+        int r = (int) (Math.random()*f.length);
+        return f[r];
+
+    }
+    public static ImageButton[][] boxSetup(Scanner scan){
+        int x = 0;
+        int y = 0;
+        while(scan.hasNext()){
+            x++;
+            if(scan.next() == "|") {
+                scan.nextLine();
+                x = 0;
+                y++;
+            }
+        }
+        return new ImageButton[x][y];
+
+    }
+
+    public InputStream[] fileSetup() throws IOException{
+        InputStream[] s = {getAssets().open("N.txt"), getAssets().open("Diamond.txt")};
+        return s;
+    }
+    public double score(){
+        for(long l =0 ; l < startTimer; l++){
+            score++;
+        }
+        return score;
     }
 
 }
