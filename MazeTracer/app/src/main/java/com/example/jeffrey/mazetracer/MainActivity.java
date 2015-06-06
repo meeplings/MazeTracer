@@ -22,7 +22,7 @@ public class MainActivity extends AppCompatActivity{
 
     float x;
     private static double score;
-    private long startTimer;
+    StopWatch t;
     static String scoreSender;
     float y;
     Scanner input;
@@ -36,8 +36,9 @@ public class MainActivity extends AppCompatActivity{
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        startTimer = System.currentTimeMillis();
-        scoreSender = Double.toString(score);
+        score = 1000;
+        t = new StopWatch();
+
         try {
             input = new Scanner(randFile(fileSetup()));
         } catch (IOException e) {
@@ -60,8 +61,10 @@ public class MainActivity extends AppCompatActivity{
                             public boolean onTouch(View v, MotionEvent e) {
                                 if (star.isPressed() &&
                                         ((v.getX()+v.getWidth() > star.getX() + star.getWidth())&& (v.getY()+v.getHeight()> star.getY() + star.getHeight()))){
+                                    t.stop();
                                     Intent intent = new Intent(MainActivity.this, StartActivity.class);
-                                    intent.putExtra("score", scoreSender);
+                                    scoreSender = Double.toString(score);
+                                    intent.putExtra("scoreSender", scoreSender);
                                     startActivity(intent);
                                     finish();
                             }
@@ -74,12 +77,6 @@ public class MainActivity extends AppCompatActivity{
             }
             yOffset+=box[i][0].getHeight();
         }
-        for(int i = 1; i < box.length; i++){
-            for(int j = 1; j < box[i].length; j++){
-                box[i][j].setActivated(false);
-            }
-        }
-        invisButtons();
         star = (ImageButton) findViewById(R.id.star);
         star.setOnTouchListener(
                 new ImageButton.OnTouchListener(){
@@ -112,6 +109,12 @@ public class MainActivity extends AppCompatActivity{
                     }
                 }
         );
+        try {
+            scan();
+            t.start();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
 
@@ -144,23 +147,12 @@ public class MainActivity extends AppCompatActivity{
 
     }
     public void buttonSetup(ImageButton x, int xOff, int yOff){
-        RelativeLayout.LayoutParams p = new RelativeLayout.LayoutParams((int) ( screen.getWidth()/getResources().getDisplayMetrics().density), (
-                (int) (screen.getHeight()/ getResources().getDisplayMetrics().density)));
+        RelativeLayout.LayoutParams p = new RelativeLayout.LayoutParams(screen.getWidth(),screen.getHeight());
         p.leftMargin = xOff;
         p.topMargin = yOff;
         if(x.isActivated())
              x.setBackgroundColor(Color.BLUE);
         screen.addView(x, p);
-    }
-    public void invisButtons(){
-        for(int i = 0; i < box.length; i++){
-            for(int j = 0; j < box[i].length; j++){
-                if(!box[i][j].isActivated())
-                    box[i][j].setVisibility(View.INVISIBLE);
-                else
-                    ActivatedButtons.add(box[i][j]);
-            }
-        }
     }
     public void scan() throws IOException {
         Scanner scan = null;
@@ -226,10 +218,9 @@ public class MainActivity extends AppCompatActivity{
         InputStream[] s = {getAssets().open("N.txt"), getAssets().open("Diamond.txt")};
         return s;
     }
-    public double score(){
-        for(long l =0 ; l < startTimer; l++){
-            score++;
-        }
+    public double incrementScore(){
+        while(t.getRunning())
+            score--;
         return score;
     }
 
