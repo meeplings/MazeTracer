@@ -48,8 +48,12 @@ public class MainActivity extends AppCompatActivity{
         screen = (RelativeLayout) findViewById(R.id.relativeLayout);
         x = 0;
         y = 0;
+<<<<<<< HEAD
         box = boxSetup(input);
         int yOffset = 0;
+=======
+        box = new ImageButton[5][5];
+>>>>>>> cda02de686ed3df50a10e957b314476e3afd3400
         for(int i = 0; i < box.length; i++){
             int xOffset = 0;
             for(int j =0; j < box[i].length; j++){
@@ -59,12 +63,17 @@ public class MainActivity extends AppCompatActivity{
                 box[i][j].setOnTouchListener(
                         new ImageButton.OnTouchListener(){
                             public boolean onTouch(View v, MotionEvent e) {
+<<<<<<< HEAD
                                 if (star.isPressed() &&
                                         ((v.getX()+v.getWidth() > star.getX() + star.getWidth())&& (v.getY()+v.getHeight()> star.getY() + star.getHeight()))){
                                     t.stop();
                                     Intent intent = new Intent(MainActivity.this, StartActivity.class);
                                     scoreSender = Double.toString(score);
                                     intent.putExtra("scoreSender", scoreSender);
+=======
+                                if (star.isPressed() && v.){
+                                    Intent intent = new Intent(MainActivity.this, StartActivity.class);
+>>>>>>> cda02de686ed3df50a10e957b314476e3afd3400
                                     startActivity(intent);
                                     finish();
                             }
@@ -73,6 +82,7 @@ public class MainActivity extends AppCompatActivity{
                         }
                 );
                 box[i][j].setVisibility(View.VISIBLE);
+                box[i][j].setImageResource(R.drawable.red_x);
                 box[i][j].setActivated(true);
             }
             yOffset+=box[i][0].getHeight();
@@ -162,7 +172,11 @@ public class MainActivity extends AppCompatActivity{
             e.printStackTrace();
         }
         if(scan != null)
+<<<<<<< HEAD
             readText(box, scan);
+=======
+            readText(box,scan);
+>>>>>>> cda02de686ed3df50a10e957b314476e3afd3400
     }
 
     public ImageButton[][] readText(ImageButton[][] b, Scanner scan){
@@ -180,6 +194,7 @@ public class MainActivity extends AppCompatActivity{
                 b[row][col].setBackgroundResource(R.drawable.e_image);
                 b[row][col].setBackgroundColor(Color.RED);
             }
+<<<<<<< HEAD
             else if(character == "*")
                 b[row][col].setBackgroundColor(Color.BLUE);
             row++;
@@ -197,6 +212,17 @@ public class MainActivity extends AppCompatActivity{
     public InputStream randFile(InputStream[] f){
         int r = (int) (Math.random()*f.length);
         return f[r];
+=======
+            else if(character == "*"){
+                b[row][col].setBackgroundColor(Color.BLUE);
+            }
+            col++;
+             if(character == "|"){
+                 col = 0;
+                 row++;
+            }
+
+>>>>>>> cda02de686ed3df50a10e957b314476e3afd3400
 
     }
     public static ImageButton[][] boxSetup(Scanner scan){
@@ -210,6 +236,7 @@ public class MainActivity extends AppCompatActivity{
                 y++;
             }
         }
+<<<<<<< HEAD
         return new ImageButton[x][y];
 
     }
@@ -222,6 +249,9 @@ public class MainActivity extends AppCompatActivity{
         while(t.getRunning())
             score--;
         return score;
+=======
+        return b;
+>>>>>>> cda02de686ed3df50a10e957b314476e3afd3400
     }
 
 }
